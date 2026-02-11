@@ -19,7 +19,4 @@ test:
   database: sentia_data_importer_test
 
 production:
-  <<: *default
-  database: sentia_data_importer_production
-  username: <%= ENV.fetch("POSTGRES_USER", "sentia_data_importer") %>
-  password: <%= ENV["SENTIA_DATA_IMPORTER_DATABASE_PASSWORD"] %>
+  url: <%= ENV.fetch("DATABASE_URL") %>
