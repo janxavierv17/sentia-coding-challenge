@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sentia-green: #00ffbc;
+  --color-sentia-black: #000000;
+  --color-sentia-gray-100: #f8f9fa;
+  --color-sentia-gray-800: #343a40;
+  --color-sentia-cyan: #0dcaf0;
+  --color-sentia-blue: #0d6efd;
+  --color-sentia-red: #dc3545;
+  --color-sentia-yellow: #ffc107;
+
+  --color-sentia-bg: #18191a;
+  --color-sentia-surface: #1e1f20;
+  --color-sentia-border: #3a3b3c;
+
+  --font-family-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Skip-to-content link */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Fade-in animation for flash messages */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

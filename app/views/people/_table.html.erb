@@ -1,0 +1,155 @@
+<% if people.any? %>
+  <div class="bg-sentia-surface rounded-3xl shadow-sm border border-sentia-border overflow-hidden flex flex-col flex-1 min-h-0">
+    <div class="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar relative">
+      <table class="min-w-full divide-y divide-sentia-border border-separate border-spacing-0">
+        <caption class="sr-only">Star Wars characters with their locations, affiliations, weapons, and vehicles</caption>
+        <thead class="bg-sentia-black">
+          <tr>
+            <th scope="col" class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider sticky top-0 z-20 bg-sentia-black shadow-sm">
+              <%= sort_with_arrow("first_name", "First Name") %>
+            </th>
+            <th scope="col" class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider sticky top-0 z-20 bg-sentia-black shadow-sm">
+              <%= sort_with_arrow("last_name", "Last Name") %>
+            </th>
+            <th scope="col" class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-sentia-gray-400 uppercase tracking-wider sticky top-0 z-20 bg-sentia-black shadow-sm">
+              Location(s)
+            </th>
+            <th scope="col" class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-sentia-gray-400 uppercase tracking-wider sticky top-0 z-20 bg-sentia-black shadow-sm">
+              Affiliation(s)
+            </th>
+            <th scope="col" class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider sticky top-0 z-20 bg-sentia-black shadow-sm whitespace-nowrap">
+              <%= sort_with_arrow("weapon", "Weapon") %>
+            </th>
+            <th scope="col" class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider sticky top-0 z-20 bg-sentia-black shadow-sm whitespace-nowrap">
+              <%= sort_with_arrow("vehicle", "Vehicle") %>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-sentia-border">
+          <% people.each_with_index do |person, index| %>
+            <tr class="<%= index.even? ? 'bg-sentia-surface' : 'bg-sentia-bg' %> hover:bg-sentia-green/10 transition-colors duration-150">
+              <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                    <%= person.first_name[0].upcase %>
+                  </div>
+                  <div class="text-sm font-semibold text-sentia-gray-100"><%= person.first_name %></div>
+                </div>
+              </td>
+              <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-semibold text-sentia-gray-100">
+                <%= person.last_name.present? ? person.last_name : content_tag(:span, "—", class: "text-sentia-gray-600 italic") %>
+              </td>
+              <td class="px-3 sm:px-6 py-3 sm:py-4">
+                <div class="flex flex-wrap gap-1.5">
+                  <% person.locations.each do |location| %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100/10 text-sky-300 border border-sky-500/20">
+                      <%= location.name %>
+                    </span>
+                  <% end %>
+                  <% if person.locations.empty? %>
+                    <span class="text-xs text-sentia-gray-600 italic">—</span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="px-3 sm:px-6 py-3 sm:py-4">
+                <div class="flex flex-wrap gap-1.5">
+                  <% person.affiliations.each do |affiliation| %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100/10 text-amber-300 border border-amber-500/20">
+                      <%= affiliation.name %>
+                    </span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-sentia-gray-400">
+                <%= person.weapon.present? ? person.weapon : content_tag(:span, "—", class: "text-sentia-gray-600 italic") %>
+              </td>
+              <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-sentia-gray-400">
+                <%= person.vehicle.present? ? person.vehicle : content_tag(:span, "—", class: "text-sentia-gray-600 italic") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <% if people.total_pages > 1 %>
+      <nav class="bg-sentia-surface border-t border-sentia-border px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0 flex-shrink-0" aria-label="Pagination">
+        <div class="hidden sm:block">
+          <p class="text-sm text-sentia-gray-400">
+            Showing
+            <span class="font-medium text-sentia-gray-100"><%= people.offset_value + 1 %></span>
+            to
+            <span class="font-medium text-sentia-gray-100"><%= [people.offset_value + people.size, people.total_count].min %></span>
+            of
+            <span class="font-medium text-sentia-gray-100"><%= people.total_count %></span>
+            people
+          </p>
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-2">
+          <% if people.first_page? %>
+            <span aria-disabled="true" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-sentia-gray-600 bg-sentia-surface/50 border border-sentia-border rounded-full cursor-not-allowed opacity-50 whitespace-nowrap">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Prev
+            </span>
+          <% else %>
+            <%= link_to people_path(page: people.prev_page, search: params[:search], sort: params[:sort], direction: params[:direction]),
+                data: { turbo_frame: "people_table" },
+                class: "inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-sentia-gray-100 bg-sentia-surface border border-sentia-border rounded-full hover:bg-sentia-bg hover:border-sentia-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-sentia-green focus:ring-offset-2 whitespace-nowrap" do %>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Prev
+            <% end %>
+          <% end %>
+
+          <% (1..people.total_pages).each do |page| %>
+            <% if page == people.current_page %>
+              <span aria-current="page" class="inline-flex items-center px-3 py-1.5 text-sm font-bold text-sentia-black bg-sentia-green rounded-full shadow-sm">
+                <%= page %>
+              </span>
+            <% else %>
+              <%= link_to page, people_path(page: page, search: params[:search], sort: params[:sort], direction: params[:direction]),
+                  data: { turbo_frame: "people_table" },
+                  class: "inline-flex items-center px-3 py-1.5 text-sm font-medium text-sentia-gray-100 bg-sentia-surface border border-sentia-border rounded-full hover:bg-sentia-bg hover:border-sentia-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-sentia-green focus:ring-offset-2" %>
+            <% end %>
+          <% end %>
+
+          <% if people.last_page? %>
+            <span aria-disabled="true" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-sentia-gray-600 bg-sentia-surface/50 border border-sentia-border rounded-full cursor-not-allowed opacity-50 whitespace-nowrap">
+              Next
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          <% else %>
+            <%= link_to people_path(page: people.next_page, search: params[:search], sort: params[:sort], direction: params[:direction]),
+                data: { turbo_frame: "people_table" },
+                class: "inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-sentia-gray-100 bg-sentia-surface border border-sentia-border rounded-full hover:bg-sentia-bg hover:border-sentia-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-sentia-green focus:ring-offset-2 whitespace-nowrap" do %>
+              Next
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            <% end %>
+          <% end %>
+        </div>
+      </nav>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-sentia-surface rounded-3xl shadow-sm border border-sentia-border p-12 text-center">
+    <div class="flex flex-col items-center gap-4">
+      <div class="w-16 h-16 bg-sentia-bg rounded-full flex items-center justify-center text-sentia-gray-600 mb-2">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold text-sentia-gray-100">No people found</h3>
+        <p class="text-sm text-sentia-gray-400 mt-1">Import a CSV file to get started or try a different search term.</p>
+      </div>
+    </div>
+  </div>
+<% end %>

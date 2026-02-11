@@ -1,0 +1,25 @@
+# PostgreSQL configuration for Docker Compose and local development.
+# Docker Compose sets DB_HOST, POSTGRES_USER, and POSTGRES_PASSWORD.
+# Locally, PostgreSQL uses the OS user via a domain socket (no config needed).
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "") %>
+
+development:
+  <<: *default
+  database: sentia_data_importer_development
+
+test:
+  <<: *default
+  database: sentia_data_importer_test
+
+production:
+  <<: *default
+  database: sentia_data_importer_production
+  username: <%= ENV.fetch("POSTGRES_USER", "sentia_data_importer") %>
+  password: <%= ENV["SENTIA_DATA_IMPORTER_DATABASE_PASSWORD"] %>
