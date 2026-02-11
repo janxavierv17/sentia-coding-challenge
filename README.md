@@ -4,7 +4,7 @@
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url> && cd coding_challenge
+git clone <repo-url> && cd sentia_coding_challenge
 
 # 2. Start the app (builds + boots Rails + PostgreSQL)
 docker compose up --build
