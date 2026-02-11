@@ -235,6 +235,9 @@ docker-compose exec web bin/rails db:version
 docker-compose exec web bin/rails db:seed:replant
 # or locally: bin/rails db:seed:replant
 
+# Clear data on Railway
+railway run bundle exec rake db:clear_all
+
 # Clear specific tables via Rails console
 docker-compose exec web bin/rails console
 # Then run: Person.delete_all; Location.delete_all; Affiliation.delete_all
