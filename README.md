@@ -61,7 +61,7 @@ graph TD
         B[Stimulus.js]
         C[Tailwind CSS]
     end
-    
+
     subgraph "Rails Application"
         D[PeopleController]
         E[ApplicationController]
@@ -72,34 +72,34 @@ graph TD
         J[locations_people]
         K[affiliations_people]
     end
-    
+
     subgraph "PostgreSQL Database"
         L[pg_trgm extension]
         M[pg_search gem]
         N[Data Tables]
     end
-    
+
     %% User interactions
     A -.->|HTTP Requests| D
     B -.->|HTTP Requests| D
     C -.->|Styling| A
-    
+
     %% Controller flow
     D --> F
     D --> G
     E --> D
-    
+
     %% Service layer
     F --> G
     F --> H
     F --> I
-    
+
     %% Model relationships
     G <--> J
     G <--> K
     H <--> J
     I <--> K
-    
+
     %% Database connections
     G --> N
     H --> N
@@ -108,13 +108,13 @@ graph TD
     K --> N
     L --> G
     M --> G
-    
+
     %% Styling
     classDef frontend fill:#e1f5fe,stroke:#01579b,color:#000
     classDef backend fill:#f3e5f5,stroke:#4a148c,color:#000
     classDef service fill:#fff3e0,stroke:#e65100,color:#000
     classDef database fill:#e8f5e8,stroke:#1b5e20,color:#000
-    
+
     class A,B,C frontend
     class D,E backend
     class F service
@@ -159,16 +159,18 @@ A **Service Object** that:
 - Search bar only appears when database contains data (`Person.any?`)
 - `<turbo_frame id="people_table">` wraps only the table + pagination
 - Stimulus `search` controller provides 300ms debounced form submission
-- Stimulus `file-import` controller validates CSV files and enables/disables import button
+- Stimulus `file-import` controller validates CSV files, manages loading states (spinner + button text), and disables the button during processing
 - Stimulus `flash` controller auto-dismisses success/error messages after 5-7 seconds
-- Sort/pagination/search all update via Turbo without page reloads
+- **Turbo Stream CSV Import**: Success/error notifications and table data are updated dynamically via Turbo Streams without a full page reload or redirect.
+- **Production Reliability**: Uses `status: :see_other` (303) for all redirects, ensuring Turbo correctly handles page transitions in high-latency environments.
 
 ### Accessibility (WCAG 2.1 AA)
 
 - Skip-to-content link
 - Semantic HTML (`<table>`, `<th scope="col">`, `<caption>`, `<nav>`)
 - `aria-sort` on sortable columns, `aria-current="page"` on pagination
-- `aria-live="polite"` for search results, `role="alert"` on flash messages
+- `aria-live="polite"` for search results and flash messages
+- Loading indicator with `animate-spin` and "Importing..." text for visual feedback
 - 4.5:1 colour contrast ratio, visible focus rings
 
 ## Features
@@ -176,7 +178,8 @@ A **Service Object** that:
 - **Advanced Search**: PostgreSQL full-text search with trigram fuzzy matching (hidden until data exists)
 - **Pagination**: 10 records per page with Kaminari
 - **Sorting**: Click column headers to sort by name, weapon, vehicle
-- **Smart CSV Import**: Import button disabled until valid CSV file selected
+- **Smart CSV Import**: Import button disabled until valid CSV file selected; provides a loading spinner and "Importing..." state during processing.
+- **Dynamic Updates**: Real-time table and notification updates via Turbo Streams.
 - **Auto-dismiss Notifications**: Success/error messages fade out automatically after 5-7 seconds
 - **Real-time Updates**: Search and navigation without page reloads via Turbo
 - **Accessibility**: WCAG 2.1 AA compliant with proper ARIA labels
@@ -319,12 +322,3 @@ docker-compose down -v
 # Execute commands in running container
 docker-compose exec web <command>
 ```
-
-## Deployment (Railway)
-
-This application is ready for deployment on **Railway.app** using the provided `Dockerfile`.
-
-1. **New Project**: Select "Deploy from GitHub repo".
-2. **Add Postgres**: Attach a PostgreSQL service to your project.
-3. **Set Variables**: Add `RAILS_MASTER_KEY` (from `config/master.key`) to your web service.
-4. **Build**: Railway will automatically use the `Dockerfile` and execute migrations on boot via the entrypoint.
