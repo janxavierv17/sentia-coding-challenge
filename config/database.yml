@@ -19,4 +19,4 @@ test:
   database: sentia_data_importer_test
 
 production:
-  url: <%= ENV.fetch("DATABASE_URL") %>
+  url: <%= ENV.fetch("DATABASE_URL", "postgresql://user:pass@localhost/mydb") %>
