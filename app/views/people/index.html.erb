@@ -1,14 +1,6 @@
 <section class="w-full h-full flex flex-col">
   <%# Import Form %>
-  <div class="mb-8 bg-sentia-surface rounded-3xl shadow-sm border border-sentia-border p-6">
-    <h2 class="text-lg font-semibold text-sentia-gray-100 mb-4">Import a csv file</h2>
-    <%= form_with url: import_people_path, method: :post, multipart: true, data: { controller: "file-import" }, class: "flex flex-col sm:flex-row items-start sm:items-end gap-4" do |f| %>
-      <div class="flex-1 w-full sm:w-auto">
-        <%= f.file_field :file, accept: ".csv", data: { file_import_target: "fileInput", action: "change->file-import#fileChanged" }, class: "block w-full text-sm text-sentia-gray-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#00b9f0] file:text-white hover:file:bg-[#00a0d0] file:cursor-pointer file:transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b9f0] focus:ring-offset-2 rounded-full" %>
-      </div>
-      <%= f.submit "Import", disabled: true, data: { file_import_target: "submitButton" }, class: "inline-flex items-center px-6 py-2.5 bg-sentia-green text-sentia-black text-sm font-bold rounded-full shadow-md hover:shadow-lg hover:bg-[#00e0a5] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sentia-green focus:ring-offset-2 opacity-50 cursor-not-allowed disabled:hover:bg-sentia-green" %>
-    <% end %>
-  </div>
+  <%= render "import_form" %>
 
   <%# Search — OUTSIDE the Turbo Frame to prevent focus loss %>
   <% if Person.any? %>

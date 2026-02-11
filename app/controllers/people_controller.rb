@@ -14,7 +14,14 @@ class PeopleController < ApplicationController
 
   def import
     if params[:file].blank?
-      redirect_to people_path, alert: 'Please select a CSV file to import.'
+      flash[:alert] = 'Please select a CSV file to import.'
+      respond_to do |format|
+        format.html { redirect_to people_path, status: :see_other }
+        format.turbo_stream { 
+          flash.now[:alert] = 'Please select a CSV file to import.'
+          render turbo_stream: turbo_stream.replace('flash', partial: 'shared/flash') 
+        }
+      end
       return
     end
 
@@ -22,13 +29,31 @@ class PeopleController < ApplicationController
       result = CsvImporter.new(params[:file].tempfile).call
 
       if result.errors.any?
-        redirect_to people_path, alert: "Import completed with errors: #{result.errors.join(', ')}"
+        @message = "Import completed with errors: #{result.errors.join(', ')}"
+        @flash_type = :alert
       else
-        redirect_to people_path,
-                    notice: "Successfully imported #{result.imported_count} people. #{result.skipped_count} rows skipped."
+        @message = "Successfully imported #{result.imported_count} people. #{result.skipped_count} rows skipped."
+        @flash_type = :notice
       end
     rescue StandardError => e
-      redirect_to people_path, alert: "Import failed: #{e.message}"
+      @message = "Import failed: #{e.message}"
+      @flash_type = :alert
+    end
+
+    respond_to do |format|
+      format.html { redirect_to people_path, @flash_type => @message, status: :see_other }
+      format.turbo_stream do
+        flash.now[@flash_type] = @message
+        @people = Person.includes(:locations, :affiliations)
+                        .order(sort_column => sort_direction)
+                        .page(1)
+                        .per(10)
+        render turbo_stream: [
+          turbo_stream.replace('flash', partial: 'shared/flash'),
+          turbo_stream.replace('import-form-container', partial: 'people/import_form'),
+          turbo_stream.replace('people_table', partial: 'people/table', locals: { people: @people })
+        ]
+      end
     end
   end
 

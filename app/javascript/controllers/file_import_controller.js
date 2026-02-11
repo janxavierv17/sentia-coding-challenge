@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["fileInput", "submitButton"]
+  static targets = ["fileInput", "submitButton", "spinner", "buttonText"]
 
   connect() {
     this.updateButtonState()
@@ -11,9 +11,16 @@ export default class extends Controller {
     this.updateButtonState()
   }
 
+  submit() {
+    this.submitButtonTarget.disabled = true
+    this.submitButtonTarget.classList.add("opacity-75", "cursor-not-allowed")
+    this.spinnerTarget.classList.remove("hidden")
+    this.buttonTextTarget.textContent = "Importing..."
+  }
+
   updateButtonState() {
     const file = this.fileInputTarget.files[0]
-    const isValidCsv = file && file.type === "text/csv"
+    const isValidCsv = file && (file.type === "text/csv" || file.name.endsWith(".csv"))
     
     this.submitButtonTarget.disabled = !isValidCsv
     
