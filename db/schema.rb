@@ -22,6 +22,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_083215) do
     t.index ["name"], name: "index_affiliations_on_name", unique: true
   end
 
+  # HABTM
   create_table "affiliations_people", id: false, force: :cascade do |t|
     t.bigint "affiliation_id", null: false
     t.bigint "person_id", null: false
@@ -36,7 +37,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_083215) do
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_locations_on_name", unique: true
   end
-
+  
+  # HABTM
   create_table "locations_people", id: false, force: :cascade do |t|
     t.bigint "location_id", null: false
     t.bigint "person_id", null: false

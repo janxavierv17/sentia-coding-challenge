@@ -4,9 +4,11 @@
 rm -f /rails/tmp/pids/server.pid
 
 # If running the rails server then create or migrate existing database
+# Do not run rail's db:prepare command when using bash to view container contents or something else.
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
   ./bin/rails db:prepare
 elif [ "${1}" == "./bin/dev" ]; then
+  # Run setup if db does not exist otherwise, run migration.
   ./bin/rails db:prepare
 fi
 

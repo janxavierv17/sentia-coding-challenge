@@ -3,26 +3,7 @@
   <%= render "import_form" %>
 
   <%# Search — OUTSIDE the Turbo Frame to prevent focus loss %>
-  <% if Person.any? %>
-    <div class="mb-6">
-      <%= form_with url: people_path, method: :get, data: { controller: "search", turbo_frame: "people_table" }, class: "relative" do |f| %>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-          </div>
-          <%= f.label :search, "Search people by name", class: "sr-only" %>
-          <%= f.search_field :search,
-              value: params[:search],
-              placeholder: "Search by first or last name...",
-              data: { search_target: "input", action: "input->search#submit" },
-              autocomplete: "off",
-              class: "block w-full pl-12 pr-4 py-3 bg-sentia-surface border border-sentia-border rounded-full text-sm text-sentia-gray-100 placeholder-sentia-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-sentia-green focus:border-transparent transition-shadow" %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
+  <%= render "search_form" %>
 
   <%# Turbo Frame: table + pagination ONLY %>
   <%= turbo_frame_tag "people_table", class: "flex flex-col flex-1 min-h-0" do %>

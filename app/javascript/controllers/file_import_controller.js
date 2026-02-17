@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
+//#region file-import
 export default class extends Controller {
   static targets = ["fileInput", "submitButton", "spinner", "buttonText"]
 
@@ -33,3 +34,4 @@ export default class extends Controller {
     }
   }
 }
+//#endregion

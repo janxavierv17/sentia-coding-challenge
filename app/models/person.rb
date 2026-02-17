@@ -1,6 +1,7 @@
 class Person < ApplicationRecord
   include PgSearch::Model
 
+  # Has two things connected, locations and affiliations.
   has_and_belongs_to_many :locations
   has_and_belongs_to_many :affiliations
 

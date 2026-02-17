@@ -24,6 +24,8 @@ class CsvImporter
   end
 
   def call
+    # CSV.read() will load the whole file into RAM at once.
+    # Using foreach (streaming) helps us keep the server's RAM usage low as possible.
     CSV.foreach(@file, headers: true, header_converters: :symbol) do |row|
       next unless valid_row?(row)
 
